@@ -1737,7 +1737,7 @@ export function purposeTemplateServiceBuilder(
       };
 
       await cleanupAnnotationDocsForRemovedAnswers(
-        purposeTemplateToApiPurposeTemplateSeed(purposeTemplate.data),
+        purposeTemplateToApiPurposeTemplateSeed(updatedPurposeTemplate),
         purposeTemplate.data,
         fileManager,
         logger
