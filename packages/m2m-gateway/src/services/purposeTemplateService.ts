@@ -17,6 +17,10 @@ import {
 import { toM2MGatewayApiEService } from "../api/eserviceApiConverter.js";
 import { toM2MGatewayApiRiskAnalysisFormTemplate } from "../api/riskAnalysisFormTemplateApiConverter.js";
 import { purposeTemplateRiskAnalysisFormNotFound } from "../model/errors.js";
+import {
+  isPolledVersionAtLeastMetadataTargetVersion,
+  pollResourceWithMetadata,
+} from "../utils/polling.js";
 
 export type PurposeTemplateService = ReturnType<
   typeof purposeTemplateServiceBuilder
@@ -36,6 +40,17 @@ export function purposeTemplateServiceBuilder(
         id: purposeTemplateId,
       },
       headers,
+    });
+
+  const pollPurposeTemplateById = (
+    purposeTemplateId: PurposeTemplateId,
+    metadata: { version: number } | undefined,
+    headers: M2MGatewayAppContext["headers"]
+  ): Promise<WithMaybeMetadata<m2mGatewayApi.PurposeTemplate>> =>
+    pollResourceWithMetadata(() =>
+      retrievePurposeTemplateById(purposeTemplateId, headers)
+    )({
+      condition: isPolledVersionAtLeastMetadataTargetVersion(metadata),
     });
 
   return {
@@ -215,6 +230,32 @@ export function purposeTemplateServiceBuilder(
         config.purposeTemplateDocumentsContainer,
         logger
       );
+    },
+    async linkEServicesToPurposeTemplate(
+      purposeTemplateId: PurposeTemplateId,
+      eserviceIds: string[],
+      { headers, logger }: WithLogger<M2MGatewayAppContext>
+    ): Promise<m2mGatewayApi.EServiceDescriptorPurposeTemplate[]> {
+      logger.info(
+        `Linking e-services ${eserviceIds} to purpose template ${purposeTemplateId}`
+      );
+
+      const { data: eserviceDescriptorPurposeTemplates, metadata } =
+        await clients.purposeTemplateProcessClient.linkEServicesToPurposeTemplate(
+          {
+            eserviceIds,
+          },
+          {
+            headers,
+            params: {
+              id: purposeTemplateId,
+            },
+          }
+        );
+
+      await pollPurposeTemplateById(purposeTemplateId, metadata, headers);
+
+      return eserviceDescriptorPurposeTemplates;
     },
   };
 }
