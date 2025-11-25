@@ -16792,7 +16792,7 @@ paths:
       tags:
         - purposeTemplates
       summary: Unlink E-Services From Purpose Template
-      description: Unlink E-Services From a purpose template (in Draft or Active state)
+      description: Unlink E-Services From a Purpose Template that is in Draft or Active state
       operationId: unlinkEServicesFromPurposeTemplate
       requestBody:
         content:
@@ -16811,7 +16811,7 @@ paths:
         required: true
       responses:
         "204":
-          description: E-Services unlinked from purpose template
+          description: E-Services unlinked from Purpose Template
           headers:
             X-Rate-Limit-Limit:
               $ref: "#/components/headers/RateLimitLimitHeader"
