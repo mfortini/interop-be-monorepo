@@ -16456,7 +16456,7 @@ paths:
     put:
       tags:
         - purposeTemplates
-      summary: Update Risk Analysis
+      summary: Update a Purpose Template Risk Analysis
       description: Update a Purpose Template Risk Analysis in Draft state
       operationId: updatePurposeTemplateRiskAnalysis
       requestBody:
@@ -16467,7 +16467,7 @@ paths:
         required: true
       responses:
         "200":
-          description: Risk Analysis updated
+          description: Risk Analysis Form Template updated
           content:
             application/json:
               schema:
@@ -19877,7 +19877,6 @@ components:
             minLength: 1
             maxLength: 250
       required:
-        - id
         - values
         - editable
         - suggestedValues
