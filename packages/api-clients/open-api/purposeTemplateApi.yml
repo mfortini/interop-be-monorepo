@@ -845,25 +845,25 @@ paths:
           content:
             application/problem+json:
               schema:
-          $ref: "#/components/schemas/Problem"
+                $ref: "#/components/schemas/Problem"
         "403":
           description: Forbidden
           content:
             application/problem+json:
               schema:
-          $ref: "#/components/schemas/Problem"
+                $ref: "#/components/schemas/Problem"
         "404":
           description: Not Found
           content:
             application/problem+json:
               schema:
-          $ref: "#/components/schemas/Problem"
+                $ref: "#/components/schemas/Problem"
         "409":
           description: Conflict
           content:
             application/problem+json:
               schema:
-          $ref: "#/components/schemas/Problem"
+                $ref: "#/components/schemas/Problem"
   /purposeTemplates/{purposeTemplateId}/riskAnalysis/answers/{answerId}/annotation/documents/{documentId}:
     parameters:
       - $ref: "#/components/parameters/CorrelationIdHeader"
@@ -1249,7 +1249,7 @@ paths:
       summary: Add unsigned Risk Analysis Template document metadata to purpose template
       tags:
         - purposeTemplate
-      operationId: internalAddUnsignedRiskAnalysisTemplateDocumentMetadata
+      operationId: internalAddRiskAnalysisTemplateDocumentMetadata
       requestBody:
         description: The unsigned Risk Analysis Template document metadata
         required: true

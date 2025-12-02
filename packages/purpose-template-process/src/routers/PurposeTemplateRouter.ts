@@ -501,7 +501,7 @@ const purposeTemplateRouter = (
             addPurposeTemplateAnswerAnnotationErrorMapper,
             ctx
           );
-          return res.status(errorRes.status).send();
+          return res.status(errorRes.status).send(errorRes);
         }
       }
     )
@@ -859,7 +859,7 @@ const purposeTemplateRouter = (
           const riskAnalysisTemplateDocument =
             RiskAnalysisTemplateDocument.parse(req.body);
 
-          await purposeTemplateService.internalAddUnsignedRiskAnalysisTemplateDocumentMetadata(
+          await purposeTemplateService.internalAddRiskAnalysisTemplateDocumentMetadata(
             unsafeBrandId(purposeTemplateId),
             riskAnalysisTemplateDocument,
             ctx

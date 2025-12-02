@@ -69,8 +69,8 @@ import {
   toCreateEventPurposeTemplatePublished,
   toCreateEventPurposeTemplateSuspended,
   toCreateEventPurposeTemplateUnsuspended,
-  toCreateEventRiskAnalysisTemplateDocumentAdded,
-  toCreateEventRiskAnalysisTemplateSignedDocumentAdded,
+  toCreateEventRiskAnalysisTemplateDocumentGenerated,
+  toCreateEventRiskAnalysisTemplateSignedDocumentGenerated,
 } from "../model/domain/toEvent.js";
 import {
   addAnnotationDocumentToUpdatedAnswerIfNeeded,
@@ -1411,25 +1411,22 @@ export function purposeTemplateServiceBuilder(
         purposeTemplateState.draft,
       ]);
 
-      const riskAnalysisForm = purposeTemplate.data.purposeRiskAnalysisForm;
+      validateRiskAnalysisAnswerAnnotationOrThrow(
+        riskAnalysisTemplateAnswerAnnotationRequest.text
+      );
 
-      const answerAndAnnotation = findAnswerAndAnnotation(
+      const riskAnalysisForm = purposeTemplate.data.purposeRiskAnalysisForm;
+      const existingAnswerAndAnnotation = findAnswerAndAnnotation(
         riskAnalysisForm,
         answerId
       );
 
-      if (answerAndAnnotation.annotation) {
-        validateRiskAnalysisAnswerAnnotationOrThrow(
-          answerAndAnnotation.annotation.text
-        );
-      }
-
       const newAnnotation: RiskAnalysisTemplateAnswerAnnotation =
-        answerAndAnnotation.annotation
+        existingAnswerAndAnnotation.annotation
           ? {
-              id: answerAndAnnotation.annotation.id,
+              id: existingAnswerAndAnnotation.annotation.id,
               text: riskAnalysisTemplateAnswerAnnotationRequest.text,
-              docs: answerAndAnnotation.annotation.docs,
+              docs: existingAnswerAndAnnotation.annotation.docs,
             }
           : {
               id: generateId<RiskAnalysisTemplateAnswerAnnotationId>(),
@@ -1768,7 +1765,7 @@ export function purposeTemplateServiceBuilder(
         offset,
       });
     },
-    async internalAddUnsignedRiskAnalysisTemplateDocumentMetadata(
+    async internalAddRiskAnalysisTemplateDocumentMetadata(
       purposeTemplateId: PurposeTemplateId,
       riskAnalysisTemplateDocument: RiskAnalysisTemplateDocument,
       { logger, correlationId }: WithLogger<AppContext<AuthData>>
@@ -1795,9 +1792,8 @@ export function purposeTemplateServiceBuilder(
       };
 
       await repository.createEvent(
-        toCreateEventRiskAnalysisTemplateDocumentAdded(
+        toCreateEventRiskAnalysisTemplateDocumentGenerated(
           updatedPurposeTemplate,
-          riskAnalysisTemplateDocument.id,
           correlationId,
           metadata.version
         )
@@ -1830,9 +1826,8 @@ export function purposeTemplateServiceBuilder(
       };
 
       await repository.createEvent(
-        toCreateEventRiskAnalysisTemplateSignedDocumentAdded(
+        toCreateEventRiskAnalysisTemplateSignedDocumentGenerated(
           updatedPurposeTemplate,
-          riskAnalysisTemplateSignedDocument.id,
           correlationId,
           metadata.version
         )

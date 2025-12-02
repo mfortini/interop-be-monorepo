@@ -343,9 +343,10 @@ export function delegationServiceBuilder(
           params: { delegationId },
           headers,
         });
-      const { activationContract, revocationContract } = delegation;
 
-      const contracts = [activationContract, revocationContract];
+      const { activationSignedContract, revocationSignedContract } = delegation;
+
+      const contracts = [activationSignedContract, revocationSignedContract];
 
       const foundSignedContract = contracts.find(
         (contract) => contract?.id === contractId
@@ -358,7 +359,7 @@ export function delegationServiceBuilder(
       const path = foundSignedContract.path;
 
       const contractBytes = await fileManager.get(
-        config.delegationContractsContainer,
+        config.delegationSignedContractsContainer,
         path,
         logger
       );
